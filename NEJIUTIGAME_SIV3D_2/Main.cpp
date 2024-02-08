@@ -1,10 +1,9 @@
-﻿# include <Siv3D.hpp>
-
-#include"Player.h"
-#include"Result.h"
-#include"Wood.h"
-#include"bg.h"
-#include"GameObject.h"
+﻿#include <Siv3D.hpp>
+#include "Player.h"
+#include "Result.h"
+#include "Wood.h"
+#include "bg.h"
+#include "GameObject.h"
 
 // 共有するデータ
 struct GameData
@@ -67,14 +66,8 @@ public:
 
 	void update() override
 	{
-		if (getData().score >= getData().highscore)
-		{
-			getData().highscore = getData().score;
-		}
-
 		if (KeyEnter.down())
 		{
-			getData().gamestart = true;
 			getData().startTime = Scene::Time();
 			changeScene(U"Game");
 		}
@@ -671,13 +664,18 @@ public:
 			getData().jcount = 0;
 			getData().gcount = 0;
 			getData().mcount = 0;
-			getData().score = 0;
+			//getData().score = 0;
 
 			getData().cooltime = 0;
 		}
 		if (KeyZ.down())
 		{
 			System::Exit();
+		}
+
+		if (getData().highscore <= getData().score)
+		{
+			getData().highscore = getData().score;
 		}
 	}
 
