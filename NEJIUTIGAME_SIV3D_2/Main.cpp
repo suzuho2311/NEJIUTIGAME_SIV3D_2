@@ -31,7 +31,7 @@ struct GameData
 
 	int sx = 0;		//止まった時の木の板の真ん中のx座標
 
-	int score = 0;
+	int score;
 	int highscore = 0;
 
 	int jcount = 0;	//何回ジャストしたか
@@ -71,8 +71,11 @@ public:
 		{
 			getData().highscore = getData().score;
 		}
+
 		if (KeyEnter.down())
 		{
+			getData().gamestart = true;
+			getData().startTime = Scene::Time();
 			changeScene(U"Game");
 		}
 	}
@@ -132,16 +135,10 @@ public:
 		//ゲーム画面の描画処理
 		//Draw();
 
-
-		if (getData().score >= getData().highscore)
-		{
-			getData().highscore = getData().score;
-		}
 		if (KeyEnter.down() && getData().gameend == true)
 		{
 			changeScene(U"Result");
 		}
-
 	}
 
 	void initWood()
@@ -636,7 +633,7 @@ private:
 	GameObject Wood[WoodNum];
 };
 
-// ゲームシーン
+// リザルトシーン
 class Result : public App::Scene
 {
 public:
@@ -652,9 +649,31 @@ public:
 	{
 		updateResult();
 
-		if (KeyB.down())
+		if (KeyB.down() && getData().gameend == true)
 		{
 			changeScene(U"Title");
+
+			getData().startTime = 0.0;
+			getData().elapsedTime = 0.0;
+			getData().delayTime = 0.0;
+			getData().pushTime = 0.0;
+			getData().time = 30.0;
+			getData().stop = false;
+			getData().s = false;
+			getData().j = false;
+			getData().g1 = false;
+			getData().g2 = false;
+			getData().m = false;
+			getData().gameend = false;
+			getData().canPushFlag = true;
+
+			getData().sx = 0;
+			getData().jcount = 0;
+			getData().gcount = 0;
+			getData().mcount = 0;
+			getData().score = 0;
+
+			getData().cooltime = 0;
 		}
 		if (KeyZ.down())
 		{
