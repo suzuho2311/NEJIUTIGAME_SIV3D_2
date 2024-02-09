@@ -9,8 +9,8 @@
 struct GameData
 {
 	//画像
-	int title;
-	int titlelogo;
+	//int title;
+	//int titlelogo;
 
 	//関数
 	double startTime = 0.0;
@@ -30,8 +30,8 @@ struct GameData
 
 	int sx = 0;		//止まった時の木の板の真ん中のx座標
 
-	int score;
-	int highscore = 0;
+	int score = 0;
+	int highscore;
 
 	int jcount = 0;	//何回ジャストしたか
 	int gcount = 0;	//何回グッドしたか
@@ -41,13 +41,13 @@ struct GameData
 
 
 	//ＳＥ
-	int justpushSE;
-	int goodpushSE;
-	int misspushSE;
+	//int justpushSE;
+	//int goodpushSE;
+	//int misspushSE;
 
-	int startSE;
-	int resultSE;
-	int retrySE;
+	//int startSE;
+	//int resultSE;
+	//int retrySE;
 };
 
 /// 共有するデータの型を指定
@@ -69,6 +69,7 @@ public:
 		if (KeyEnter.down())
 		{
 			getData().startTime = Scene::Time();
+			getData().score = 0;
 			changeScene(U"Game");
 		}
 	}
@@ -76,14 +77,6 @@ public:
 	void draw() const override
 	{
 		Scene::SetBackground(ColorF{ 1.0, 1.0, 1.0 });
-		/*
-		FontAsset(U"TitleFont")(U"My Game").drawAt(400, 100);
-
-		// 現在のスコアを表示
-		FontAsset(U"ScoreFont")(U"Score: {}"_fmt(getData().score)).draw(520, 540);
-
-		Circle{ Cursor::Pos(), 50 }.draw(Palette::Orange);
-		*/
 
 		//DrawGraph(0, 0, title, true);
 		//DrawGraph(400, 300, titlelogo, true);
@@ -138,7 +131,7 @@ public:
 	{
 		Wood[0].x = 800;
 		Wood[0].y = 400;
-		Wood[0].color = Color(0,0,255);
+		//Wood[0].color = Color(0,0,255);
 		Wood[0].vx = -10;
 		Wood[0].vy = 0;
 		Wood[0].imgname = U"ITA";
@@ -642,6 +635,12 @@ public:
 	{
 		updateResult();
 
+		//↓こいつが仕事しない
+		if (getData().highscore <= getData().score)
+		{
+			getData().highscore = getData().score;
+		}
+
 		if (KeyB.down() && getData().gameend == true)
 		{
 			changeScene(U"Title");
@@ -668,27 +667,17 @@ public:
 
 			getData().cooltime = 0;
 		}
-		if (KeyZ.down())
+
+		if (KeyZ.down() && getData().gameend == true)
 		{
 			System::Exit();
-		}
-
-		if (getData().highscore <= getData().score)
-		{
-			getData().highscore = getData().score;
 		}
 	}
 
 	void draw() const override
 	{
 		Scene::SetBackground(ColorF(0.2, 0.8, 0.6));
-
-		/*m_texture.drawAt(Cursor::Pos());
-
-		// 現在のスコアを表示
-		FontAsset(U"ScoreFont")(U"Score: {}"_fmt(getData().score)).draw(40, 40);*/
 	}
-
 
 	void initResult()
 	{

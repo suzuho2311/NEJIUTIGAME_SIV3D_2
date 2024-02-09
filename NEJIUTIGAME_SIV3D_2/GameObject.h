@@ -16,7 +16,7 @@ public:
 	en kind;    //オブジェクトの種類
 	int x;		//ｘ座標
 	int y;		//ｙ座標
-	Color color;	//色
+	//Color color;	//色
 	int vx;		//横の移動量
 	int vy;		//縦の移動量
 	int vvx;	//横の移動量2
