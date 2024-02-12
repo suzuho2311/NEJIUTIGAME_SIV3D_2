@@ -30,7 +30,6 @@ struct GameData
 
 	int sx = 0;		//止まった時の木の板の真ん中のx座標
 
-	int score = 0;
 	int highscore;
 
 	int jcount = 0;	//何回ジャストしたか
@@ -50,7 +49,7 @@ struct GameData
 	//int retrySE;
 };
 
-/// 共有するデータの型を指定
+// 共有するデータの型を指定
 using App = SceneManager<String, GameData>;
 
 // タイトルシーン
@@ -69,7 +68,6 @@ public:
 		if (KeyEnter.down())
 		{
 			getData().startTime = Scene::Time();
-			getData().score = 0;
 			changeScene(U"Game");
 		}
 	}
@@ -81,17 +79,11 @@ public:
 		//DrawGraph(0, 0, title, true);
 		//DrawGraph(400, 300, titlelogo, true);
 		font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
-		//SetFontSize(100);
-		//DrawFormatString(40, 200, GetColor(200, 60, 20), "ねじうちﾂ！！！！！");
 		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20,140, 400, Color(200, 60, 20));
-		//SetFontSize(20);
-		//DrawFormatString(140, 400, GetColor(0, 0, 255), "タイミングよくSpaceキーを押して、木の板を止めよう");
 		font(U"あなたのハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
-		//SetFontSize(30);
-		//DrawFormatString(10, 550, GetColor(0, 0, 0), "あなたのハイスコア　%d", highscore);
 		font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
-		//DrawFormatString(200, 500, GetColor(0, 0, 255), "Enterキーを押してスタート!");
 	}
+
 private:
 	String titleimg;
 	String logoimg;
@@ -131,7 +123,6 @@ public:
 	{
 		Wood[0].x = 800;
 		Wood[0].y = 400;
-		//Wood[0].color = Color(0,0,255);
 		Wood[0].vx = -10;
 		Wood[0].vy = 0;
 		Wood[0].imgname = U"ITA";
@@ -343,35 +334,24 @@ public:
 
 		if (gamedata->gameend == true)
 		{
-			//SetFontSize(50);
 			font(U"ＧＡＭＥ　ＥＮＤ").draw(50,195, 290, Color(255, 0, 0));
-			//DrawFormatString(195, 290, GetColor(255, 0, 0), "ＧＡＭＥ　ＥＮＤ");
-			//SetFontSize(35);
 			font(U"Enterキーを押して次に進んでね").draw(35, 135, 350, Color(255, 0, 0));
-			//DrawFormatString(135, 350, GetColor(255, 0, 0), "Enterキーを押して次に進んでね");
 		}
 		else
 		{
-			//SetFontSize(20);
 			font(U"スコア").draw(20, 10, 10, Color(0, 0, 0));
-			//DrawFormatString(10, 10, GetColor(0, 0, 0), "スコア");
-			font(U"　　　　　　ＪＵＳＴ　{}"_fmt(gamedata->jcount)).draw(20, 10, 10, Color(255, 150, 0));
-			//DrawFormatString(10, 10, GetColor(255, 150, 0), "　　　　　　ＪＵＳＴ　%d", jcount);	//ジャストの合計回数
-			font(U"　　　　　　ＧＯＯＤ　{}"_fmt(gamedata->gcount)).draw(20, 10, 30, Color(0, 150, 255));
-			//DrawFormatString(10, 30, GetColor(0, 150, 255), "　　　　　　ＧＯＯＤ　%d", gcount);	//グッドの合計回数
-			font(U"　　　　　　ＭＩＳＳ　{}"_fmt(gamedata->mcount)).draw(20, 10, 50, Color(150, 0, 255));
-			//DrawFormatString(10, 50, GetColor(150, 0, 255), "　　　　　　ＭＩＳＳ　%d", mcount);	//ミスの合計回数
+			font(U"　　　　　　ＪＵＳＴ　{}"_fmt(gamedata->jcount)).draw(20, 10, 10, Color(255, 150, 0));	//ジャストの合計回数
+			font(U"　　　　　　ＧＯＯＤ　{}"_fmt(gamedata->gcount)).draw(20, 10, 30, Color(0, 150, 255));	//グッドの合計回数
+			font(U"　　　　　　ＭＩＳＳ　{}"_fmt(gamedata->mcount)).draw(20, 10, 50, Color(150, 0, 255));	//ミスの合計回数
 
 			gamedata->elapsedTime = Scene::Time() - gamedata->startTime;
 			double s = (gamedata->time - gamedata->elapsedTime + gamedata->delayTime);
 			font(U"残り {:.2f} 秒"_fmt(s)).draw(20, 650, 10, Color(0, 0, 0));
-			//DrawFormatString(650, 10, GetColor(0, 0, 0), "残り %3.2f 秒", s);
 		}
 
 		//木の板の描画
 		for (int i = 0; i < WoodNum; i++)
 		{
-			//DrawGraph(Wood[i].x, Wood[i].y, Wood[i].img, true);
 			TextureAsset(Wood[i].imgname).draw(Wood[i].x, Wood[i].y);
 		}
 		
@@ -404,20 +384,14 @@ public:
 		if (gamedata->j)
 		{
 			font(U"ＪＵＳＴ").draw(40, 317, 300, Color(255, 150, 0));
-			//SetFontSize(40);
-			//DrawFormatString(317, 300, GetColor(255, 150, 0), "ＪＵＳＴ");
 		}
 		if (gamedata->g1 || gamedata->g2)
 		{
 			font(U"ＧＯＯＤ").draw(40, 317, 300, Color(0, 150, 255));
-			//SetFontSize(40);
-			//DrawFormatString(317, 300, GetColor(0, 150, 255), "ＧＯＯＤ");
 		}
 		if (gamedata->m)
 		{
 			font(U"ＭＩＳＳ").draw(40, 317, 300, Color(150, 0, 255));
-			//SetFontSize(40);
-			//DrawFormatString(317, 300, GetColor(150, 0, 255), "ＭＩＳＳ");
 		}
 	}
 
@@ -579,13 +553,11 @@ public:
 	{
 		for (int j = 0; j < DriverNum; j++)
 		{
-			//DrawGraph(Driver[j].x, Driver[j].y, Driver[j].img, true);
 			TextureAsset(Driver[j].imgname).draw(Driver[j].x, Driver[j].y);
 		}
 
 		for (int j = 0; j < ScrewNum; j++)
 		{
-			//DrawGraph(Screw[j].x, Screw[j].y, Screw[j].img, true);
 			TextureAsset(Screw[j].imgname).draw(Screw[j].x, Screw[j].y);
 		}
 	}
@@ -608,8 +580,6 @@ private:
 	const static int ScrewNum = 3;
 	GameObject Driver[DriverNum];
 	GameObject Screw[ScrewNum];
-
-	int sy;
 
 	bool jdriver = false;
 	bool g1driver = false;
@@ -635,10 +605,11 @@ public:
 	{
 		updateResult();
 
-		//↓こいつが仕事しない
-		if (getData().highscore <= getData().score)
+		GameData* gamedata = &getData();
+
+		if (gamedata->highscore <= score)
 		{
-			getData().highscore = getData().score;
+			gamedata->highscore = score;
 		}
 
 		if (KeyB.down() && getData().gameend == true)
@@ -663,7 +634,6 @@ public:
 			getData().jcount = 0;
 			getData().gcount = 0;
 			getData().mcount = 0;
-			//getData().score = 0;
 
 			getData().cooltime = 0;
 		}
@@ -713,18 +683,11 @@ public:
 		TextureAsset(result).draw(0,0);
 		//DrawGraph(0, 0, result, false);
 		font(U"あなたのスコア").draw(140, 140,Color(0,0,0));
-		//SetFontSize(35);
-		//DrawFormatString(140, 140, GetColor(0, 0, 0), "あなたのスコア");
 		font(U"ジャストスコア　　　　　{}点"_fmt(jscore)).draw(140, 200, Color(255, 150, 0));
-		//DrawFormatString(140, 200, GetColor(255, 150, 0), "ジャストスコア　　　　　%d点", jscore);
 		font(U"グッドスコア　　　　　　{}点"_fmt(gscore)).draw(140, 260, Color(0, 150, 255));
-		//DrawFormatString(140, 260, GetColor(0, 150, 255), "グッドスコア　　　　　　%d点", gscore);
 		font(U"ミススコア　　　　　　  -{}点"_fmt(mscore)).draw(140, 320, Color(150, 0, 255));
-		//DrawFormatString(140, 320, GetColor(150, 0, 255), "ミススコア　　　　　　  -%d点", mscore);
 		font(U"合計　　　　　　　　　　{}点"_fmt(score)).draw(140, 380, Color(150, 0, 255));
-		//DrawFormatString(140, 380, GetColor(0, 0, 0), "合計　　　　　　　　　　%d点", score);
 		font(U"Zで終了      Bでリトライ").draw(160, 500, Color(0, 0, 255));
-		//DrawFormatString(160, 500, GetColor(0, 0, 255), "Zで終了      Bでリトライ");
 	}
 private:
 	String result;
