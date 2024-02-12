@@ -30,7 +30,7 @@ struct GameData
 
 	int sx = 0;		//止まった時の木の板の真ん中のx座標
 
-	int highscore;
+	int highscore = 0;
 
 	int jcount = 0;	//何回ジャストしたか
 	int gcount = 0;	//何回グッドしたか
