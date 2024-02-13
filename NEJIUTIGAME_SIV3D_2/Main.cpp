@@ -19,6 +19,8 @@ struct GameData
 	double pushTime = 0.0;
 	double time = 30.0;
 
+	double num = 0.0;	//スピードを追加または減らす数値
+
 	bool stop = false;			//スペースキー押したかどうか
 	bool s = false;				//止まったかどうか
 	bool j = false;				//ジャストかどうか
@@ -37,7 +39,6 @@ struct GameData
 	int mcount = 0;	//何回ミスしたか
 
 	int cooltime = 0;
-
 };
 
 // 共有するデータの型を指定
@@ -47,7 +48,6 @@ using App = SceneManager<String, GameData>;
 class Title : public App::Scene
 {
 public:
-
 	Title(const InitData& init)
 		: IScene{ init }
 	{
@@ -58,11 +58,11 @@ public:
 	{
 		TitleBGM.play();
 	
-		if (SimpleGUI::Button(U"ゲームスタート", Vec2{ 300, 500 },unspecified))
+		if (SimpleGUI::Button(U"ゲームスタート", Vec2{ 300, 470 },unspecified))
 		{
 			startSE.play();
 			//getData().startTime = Scene::Time();
-			changeScene(U"Game");
+			changeScene(U"Tutorial");
 		}
 	}
 
@@ -73,8 +73,8 @@ public:
 		//DrawGraph(0, 0, title, true);
 		//DrawGraph(400, 300, titlelogo, true);
 		font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
-		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20,140, 400, Color(200, 60, 20));
-		font(U"あなたのハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
+		//font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20,140, 400, Color(200, 60, 20));
+		font(U"現在のハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
 		//font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
 	}
 
@@ -87,13 +87,10 @@ private:
 	const Audio startSE{ U"maou_se_sound_whistle01(スタート).mp3" };
 };
 
-
-class Tutorial
-	: public App::Scene
+// チュートリアルシーン
+class Tutorial : public App::Scene
 {
 public:
-
-
 	Tutorial
 	(const InitData& init)
 		: IScene{ init }
@@ -105,9 +102,10 @@ public:
 	{
 		//TitleBGM.play();
 
+		//スピード調整
+		SimpleGUI::Slider(U"{:.2f}"_fmt(getData().num), getData().num, -5.0, 5.0, Vec2{ 150, 300 }, 150, 300);
 
-		//
-		if (SimpleGUI::Button(U"ゲームスタート", Vec2{ 300, 500 }, unspecified))
+		if (SimpleGUI::Button(U"ゲームスタート", Vec2{ 300, 470 }, unspecified))
 		{
 			startSE.play();
 			getData().startTime = Scene::Time();
@@ -121,9 +119,11 @@ public:
 
 		//DrawGraph(0, 0, title, true);
 		//DrawGraph(400, 300, titlelogo, true);
-		font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
-		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20, 140, 400, Color(200, 60, 20));
-		font(U"あなたのハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
+		//font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
+		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(25, 75, 150, Color(200, 0, 00));
+		font(U"スピード調整").draw(20, 120, 270, Color(200, 60, 20));
+		font(U"（数字を小さくすると木の板が全体的に遅く、大きくすると早くなります）").draw(20, 60, 350, Color(200, 60, 20));
+		//font(U"あなたのハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
 		//font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
 	}
 
@@ -132,7 +132,7 @@ private:
 	String logoimg;
 	Font font{ 100 };
 
-	const Audio TitleBGM{ U"maou_bgm_acoustic37(タイトル).mp3" };
+	//const Audio TitleBGM{ U"maou_bgm_acoustic37(タイトル).mp3" };
 	const Audio startSE{ U"maou_se_sound_whistle01(スタート).mp3" };
 };
 
@@ -177,10 +177,6 @@ public:
 		Wood[0].vx = -10;
 		Wood[0].vy = 0;
 		Wood[0].imgname = U"ITA";
-
-		//justpushSE = LoadSoundMem("maou_se_system46.mp3");
-		//goodpushSE = LoadSoundMem("maou_se_system44.mp3");
-		//misspushSE = LoadSoundMem("maou_se_system20.mp3");
 	}
 
 	//更新
@@ -267,29 +263,32 @@ public:
 				if (getData().cooltime <= 1 && getData().j == true)	//ジャスト判定だったら
 				{
 					justpushSE.play();
-					//PlaySoundMem(justpushSE, DX_PLAYTYPE_BACK);
 					getData().jcount++;
-					getData().time = getData().time + 3.0;
 					getData().canPushFlag = false;
+
+					timepluscount++;	//時間追加回数
+
+					if (timepluscount <= 3)	//時間追加を3回やったら追加しない
+					{
+						//Print << U"+3秒";
+						getData().time = getData().time + 3.0;
+					}
 				}
 				if (getData().cooltime <= 1 && getData().g1 == true)	//グッド判定だったら
 				{
 					goodpushSE.play();
-					//PlaySoundMem(goodpushSE, DX_PLAYTYPE_BACK);
 					getData().gcount++;
 					getData().canPushFlag = false;
 				}
 				if (getData().cooltime <= 1 && getData().g2 == true)
 				{
 					goodpushSE.play();
-					//PlaySoundMem(goodpushSE, DX_PLAYTYPE_BACK);
 					getData().gcount++;
 					getData().canPushFlag = false;
 				}
 				if (getData().cooltime <= 1 && getData().m == true)	//ミス判定だったら
 				{
 					misspushSE.play();
-					//PlaySoundMem(misspushSE, DX_PLAYTYPE_BACK);
 					getData().mcount++;
 					getData().time = getData().time - 3.0;
 					getData().canPushFlag = false;
@@ -338,10 +337,14 @@ public:
 					getData().stop = false;
 					Wood[i].x = 800;
 					getData().canPushFlag = true;
-					Wood[i].vx = -Random(10) - 1;
-					if (Wood[i].vx > -5)
+					Wood[i].vx = -Random(10) - 1 - getData().num;
+					if (Wood[i].vx > -5 && getData().num < 0)
 					{
-						Wood[i].vx = -5;
+						Wood[i].vx = -8 - getData().num;
+					}
+					else if (Wood[i].vx > -5 && getData().num >= 0)
+					{
+						Wood[i].vx = -5 - getData().num;
 					}
 				}
 			}
@@ -633,6 +636,8 @@ public:
 	}
 
 private:
+	int timepluscount = 0;
+
 	const static int DriverNum = 3;
 	const static int ScrewNum = 3;
 	GameObject Driver[DriverNum];
@@ -658,11 +663,10 @@ private:
 class Result : public App::Scene
 {
 public:
-
 	Result(const InitData& init)
 		: IScene{ init }
 	{
-		TextureAsset::Register(U"SHIRO", U"800_600白画像.png");
+		//TextureAsset::Register(U"SHIRO", U"800_600白画像.png");
 		initResult();
 	}
 
@@ -682,7 +686,7 @@ public:
 		if (KeyB.down() && getData().gameend == true)
 		{
 			retrySE.play();
-			changeScene(U"Title");
+			changeScene(U"Tutorial");
 
 			getData().startTime = 0.0;
 			getData().elapsedTime = 0.0;
@@ -701,9 +705,9 @@ public:
 			getData().sx = 0;
 
 			getData().cooltime = 0;
-			//getData().jcount = 0;
-			//getData().gcount = 0;
-			//getData().mcount = 0;
+			getData().jcount = 0;
+			getData().gcount = 0;
+			getData().mcount = 0;
 		}
 
 		if (KeyZ.down() && getData().gameend == true)
@@ -748,14 +752,14 @@ public:
 
 	void drawResult()
 	{
-		TextureAsset(result).draw(0,0);
-		//DrawGraph(0, 0, result, false);
-		font(U"あなたのスコア").draw(140, 140,Color(0,0,0));
-		font(U"ジャストスコア　　　　　{}点"_fmt(jscore)).draw(140, 200, Color(255, 150, 0));
-		font(U"グッドスコア　　　　　　{}点"_fmt(gscore)).draw(140, 260, Color(0, 150, 255));
-		font(U"ミススコア　　　　　　  -{}点"_fmt(mscore)).draw(140, 320, Color(150, 0, 255));
-		font(U"合計　　　　　　　　　　{}点"_fmt(score)).draw(140, 380, Color(150, 0, 255));
-		font(U"Zで終了      Bでリトライ").draw(160, 500, Color(0, 0, 255));
+		//TextureAsset(result).draw(0,0);
+		font(U"あなたのスコア").draw(140, 60, Color(0,0,0));
+		font(U"ジャストスコア　　　　　{}点"_fmt(jscore)).draw(140, 140, Color(255, 150, 0));
+		font(U"グッドスコア　　　　　　{}点"_fmt(gscore)).draw(140, 200, Color(0, 150, 255));
+		font(U"ミススコア　　　　　　  -{}点"_fmt(mscore)).draw(140, 260, Color(150, 0, 255));
+		font(U"合計　　　　　　　　　　{}点"_fmt(score)).draw(140, 320, Color(0, 0, 0));
+		font(U"現在のハイスコア　　　　{}点"_fmt(getData().highscore)).draw(140, 400, Color(150, 150, 150));
+		font(U"Zで終了   　　　   Bでリトライ").draw(160, 480, Color(0, 0, 255));
 	}
 
 private:
