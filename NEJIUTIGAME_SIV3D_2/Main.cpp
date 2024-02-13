@@ -121,6 +121,8 @@ public:
 
 	void initWood()
 	{
+		TextureAsset::Register(U"ITA", U"木の板（仮） (1).png");	//木の板の画像
+
 		Wood[0].x = 800;
 		Wood[0].y = 400;
 		Wood[0].vx = -10;
@@ -397,6 +399,9 @@ public:
 
 	void initPlayer()
 	{
+		TextureAsset::Register(U"DRIVER", U"driver_plus (1).png");				//ドライバーの画像
+		TextureAsset::Register(U"NEJI", U"nejinattoboruto-illust1 (1).png");	//ねじの画像
+
 		//ジャストのドライバー
 		Driver[0].x = 325;
 		Driver[0].y = 20;
