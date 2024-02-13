@@ -38,15 +38,6 @@ struct GameData
 
 	int cooltime = 0;
 
-
-	//ＳＥ
-	//int justpushSE;
-	//int goodpushSE;
-	//int misspushSE;
-
-	//int startSE;
-	//int resultSE;
-	//int retrySE;
 };
 
 // 共有するデータの型を指定
@@ -66,7 +57,57 @@ public:
 	void update() override
 	{
 		TitleBGM.play();
-		if (KeyEnter.down())
+	
+		if (SimpleGUI::Button(U"ゲームスタート", Vec2{ 300, 500 },unspecified))
+		{
+			startSE.play();
+			//getData().startTime = Scene::Time();
+			changeScene(U"Game");
+		}
+	}
+
+	void draw() const override
+	{
+		Scene::SetBackground(ColorF{ 1.0, 1.0, 1.0 });
+
+		//DrawGraph(0, 0, title, true);
+		//DrawGraph(400, 300, titlelogo, true);
+		font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
+		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20,140, 400, Color(200, 60, 20));
+		font(U"あなたのハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
+		//font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
+	}
+
+private:
+	String titleimg;
+	String logoimg;
+	Font font{ 100 };
+
+	const Audio TitleBGM{ U"maou_bgm_acoustic37(タイトル).mp3" };
+	const Audio startSE{ U"maou_se_sound_whistle01(スタート).mp3" };
+};
+
+
+class Tutorial
+	: public App::Scene
+{
+public:
+
+
+	Tutorial
+	(const InitData& init)
+		: IScene{ init }
+	{
+
+	}
+
+	void update() override
+	{
+		//TitleBGM.play();
+
+
+		//
+		if (SimpleGUI::Button(U"ゲームスタート", Vec2{ 300, 500 }, unspecified))
 		{
 			startSE.play();
 			getData().startTime = Scene::Time();
@@ -81,9 +122,9 @@ public:
 		//DrawGraph(0, 0, title, true);
 		//DrawGraph(400, 300, titlelogo, true);
 		font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
-		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20,140, 400, Color(200, 60, 20));
+		font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20, 140, 400, Color(200, 60, 20));
 		font(U"あなたのハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
-		font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
+		//font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
 	}
 
 private:
@@ -743,6 +784,7 @@ void Main()
 	// ここで GameData が初期化される
 	App manager;
 	manager.add<Title>(U"Title");
+	manager.add<Tutorial>(U"Tutorial");
 	manager.add<Game>(U"Game");
 	manager.add<Result>(U"Result");
 
