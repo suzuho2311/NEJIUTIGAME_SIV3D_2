@@ -732,7 +732,6 @@ private:
 	const Audio retrySE{ U"maou_se_system48(リトライ).mp3" };
 };
 
-
 void Main()
 {
 	FontAsset::Register(U"TitleFont", 60, Typeface::Heavy);
