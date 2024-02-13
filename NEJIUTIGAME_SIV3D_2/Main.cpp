@@ -60,13 +60,15 @@ public:
 	Title(const InitData& init)
 		: IScene{ init }
 	{
-
+		
 	}
 
 	void update() override
 	{
+		TitleBGM.play();
 		if (KeyEnter.down())
 		{
+			startSE.play();
 			getData().startTime = Scene::Time();
 			changeScene(U"Game");
 		}
@@ -88,6 +90,9 @@ private:
 	String titleimg;
 	String logoimg;
 	Font font{ 100 };
+
+	const Audio TitleBGM{ U"maou_bgm_acoustic37(タイトル).mp3" };
+	const Audio startSE{ U"maou_se_sound_whistle01(スタート).mp3" };
 };
 
 // ゲームシーン
@@ -103,6 +108,8 @@ public:
 
 	void update() override
 	{
+		GameBGM.play();
+
 		//プレイヤーの更新
 		updatePlayer();
 		//木の板の動きの更新
@@ -115,6 +122,7 @@ public:
 
 		if (KeyEnter.down() && getData().gameend == true)
 		{
+			resultSE.play();
 			changeScene(U"Result");
 		}
 	}
@@ -217,6 +225,7 @@ public:
 				getData().cooltime++;
 				if (getData().cooltime <= 1 && getData().j == true)	//ジャスト判定だったら
 				{
+					justpushSE.play();
 					//PlaySoundMem(justpushSE, DX_PLAYTYPE_BACK);
 					getData().jcount++;
 					getData().time = getData().time + 3.0;
@@ -224,18 +233,21 @@ public:
 				}
 				if (getData().cooltime <= 1 && getData().g1 == true)	//グッド判定だったら
 				{
+					goodpushSE.play();
 					//PlaySoundMem(goodpushSE, DX_PLAYTYPE_BACK);
 					getData().gcount++;
 					getData().canPushFlag = false;
 				}
 				if (getData().cooltime <= 1 && getData().g2 == true)
 				{
+					goodpushSE.play();
 					//PlaySoundMem(goodpushSE, DX_PLAYTYPE_BACK);
 					getData().gcount++;
 					getData().canPushFlag = false;
 				}
 				if (getData().cooltime <= 1 && getData().m == true)	//ミス判定だったら
 				{
+					misspushSE.play();
 					//PlaySoundMem(misspushSE, DX_PLAYTYPE_BACK);
 					getData().mcount++;
 					getData().time = getData().time - 3.0;
@@ -478,7 +490,6 @@ public:
 				Screw[0].firstMove = false;
 				Screw[0].vy = 0;
 				Screw[0].vx = Wood[0].vx;
-
 			}
 		}
 
@@ -548,7 +559,8 @@ public:
 
 		if (gamedata->j || gamedata->g1 || gamedata->g2)
 		{
-			if (gamedata->pushTime > 0) {
+			if (gamedata->pushTime > 0)
+			{
 				gamedata->delayTime = Scene::Time() - gamedata->pushTime;
 			}
 		}
@@ -577,7 +589,6 @@ public:
 		drawPlayer();
 		//木の板の描画
 		drawWood();
-		
 	}
 
 private:
@@ -592,6 +603,14 @@ private:
 	Font font{ 50 };
 	const static int WoodNum = 1;
 	GameObject Wood[WoodNum];
+
+	const Audio GameBGM{ U"maou_game_village10(ゲーム).mp3" };
+
+	const Audio justpushSE{ U"maou_se_system46(ジャスト).mp3" };
+	const Audio goodpushSE{ U"maou_se_system44(グッド).mp3" };
+	const Audio misspushSE{ U"maou_se_system20(ミス).mp3" };
+
+	const Audio resultSE{ U"maou_se_onepoint07(リザルトへ).mp3" };
 };
 
 // リザルトシーン
@@ -608,6 +627,8 @@ public:
 
 	void update() override
 	{
+		ResultBGM.play();
+
 		updateResult();
 
 		GameData* gamedata = &getData();
@@ -619,6 +640,7 @@ public:
 
 		if (KeyB.down() && getData().gameend == true)
 		{
+			retrySE.play();
 			changeScene(U"Title");
 
 			getData().startTime = 0.0;
@@ -636,11 +658,11 @@ public:
 			getData().canPushFlag = true;
 
 			getData().sx = 0;
-			getData().jcount = 0;
-			getData().gcount = 0;
-			getData().mcount = 0;
 
 			getData().cooltime = 0;
+			//getData().jcount = 0;
+			//getData().gcount = 0;
+			//getData().mcount = 0;
 		}
 
 		if (KeyZ.down() && getData().gameend == true)
@@ -694,6 +716,7 @@ public:
 		font(U"合計　　　　　　　　　　{}点"_fmt(score)).draw(140, 380, Color(150, 0, 255));
 		font(U"Zで終了      Bでリトライ").draw(160, 500, Color(0, 0, 255));
 	}
+
 private:
 	String result;
 
@@ -702,8 +725,11 @@ private:
 	int mscore;
 
 	int score;
-	Texture m_texture;
 	Font font{ 35 };
+
+	const Audio ResultBGM{ U"maou_bgm_acoustic47(リザルト).mp3" };
+
+	const Audio retrySE{ U"maou_se_system48(リトライ).mp3" };
 };
 
 
