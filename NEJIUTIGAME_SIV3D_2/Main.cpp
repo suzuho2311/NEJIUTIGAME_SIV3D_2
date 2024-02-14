@@ -84,7 +84,7 @@ private:
 	Font font{ 100 };
 
 	const Audio TitleBGM{ U"maou_bgm_acoustic37(タイトル).mp3" };
-	const Audio startSE{ U"maou_se_sound_whistle01(スタート).mp3" };
+	const Audio startSE{ U"maou_se_onepoint07(リザルトへ).mp3" };
 };
 
 // チュートリアルシーン
