@@ -74,7 +74,7 @@ public:
 		//DrawGraph(400, 300, titlelogo, true);
 		font(U"ねじうちﾂ！！！！！").draw(40, 200, Color(200, 60, 20));
 		//font(U"タイミングよくSpaceキーを押して、木の板を止めよう").draw(20,140, 400, Color(200, 60, 20));
-		font(U"現在のハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
+		//font(U"現在のハイスコア　{}"_fmt(getData().highscore)).draw(30, 10, 550, Color(0, 0, 0));
 		//font(U"Enterキーを押してスタート!").draw(30, 200, 500, Color(0, 0, 255));
 	}
 
